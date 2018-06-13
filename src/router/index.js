@@ -2,7 +2,7 @@
  * @Author: wdy
  * @Date:   2018-06-13 09:31:31
  * @Last Modified by:   wdy
- * @Last Modified time: 2018-06-13 14:39:14
+ * @Last Modified time: 2018-06-13 14:54:12
  */
 import Vue from 'vue';
 import Router from 'vue-router';
@@ -12,7 +12,13 @@ import { getSessionId } from '@/util/auth';
 const whiteList = ['/login'];
 
 const Login = () =>
-  import ('@/view/login/login.vue')
+  import ('@/view/login/login.vue');
+const Home = () =>
+  import ('@/view/home/home.vue')
+const Dashboard = () =>
+  import ('@/view/dashboard/dashboard.vue')
+const Page401 = () =>
+  import ('@/view/page401/page401.vue')
 const Page404 = () =>
   import ('@/view/page404/page404.vue')
 
@@ -23,8 +29,21 @@ const adminRouter = new Router({
     path: '/login',
     component: Login
   }, {
-    path: '/404',
-    component: Page404
+    path: '/',
+    component: Home,
+    children: [{
+      path: 'dashboard',
+      component: Dashboard
+    }, {
+      path: 'page401',
+      component: Page401
+    }, {
+      path: 'page404',
+      component: Page404
+    }]
+  }, {
+    path: '*',
+    redirect: '/page404'
   }]
 });
 

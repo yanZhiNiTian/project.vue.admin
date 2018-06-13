@@ -2,7 +2,7 @@
  * @Author: wdy
  * @Date:   2018-06-13 11:42:40
  * @Last Modified by:   wdy
- * @Last Modified time: 2018-06-13 13:37:12
+ * @Last Modified time: 2018-06-13 16:07:14
  */
 // import { baseUrl } from '@/assets/js/config.js';
 import request from '@/util/request.js';
@@ -14,6 +14,13 @@ function login(params) {
   }, params)
 }
 
+function userPower(params) {
+  return request({
+    url: getApiKey('userPower')
+  }, params)
+}
+
 export {
-  login
+  login,
+  userPower
 }

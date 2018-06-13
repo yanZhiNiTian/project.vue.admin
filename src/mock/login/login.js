@@ -2,7 +2,7 @@
  * @Author: wdy
  * @Date:   2018-06-13 10:23:33
  * @Last Modified by:   wdy
- * @Last Modified time: 2018-06-13 11:13:35
+ * @Last Modified time: 2018-06-13 18:32:35
  */
 const login = {
   sessionId: '@guid'
@@ -83,67 +83,47 @@ const userPower = {
   }],
   // 异步路由
   asynRouter: [{
-    name: '题卷列表',
-    path: '/paperList',
+    path: 'paperList',
     children: [{
-      name: '普通题卷列表',
       path: '/normalPaperList'
     }, {
-      name: '随机题卷列表',
       path: '/randomPaperList'
     }]
   }, {
-    name: '活动列表',
-    path: '/activityList'
+    path: 'activityList'
   }, {
-    name: '题库',
-    path: '/questionBank'
+    path: 'questionBank'
   }, {
-    name: '广告图片',
-    path: '/advertisingPicture'
+    path: 'advertisingPicture'
   }, {
-    name: '数据标准化',
-    path: '/dataStandardization',
+    path: 'dataStandardization',
     children: [{
-      name: '类目',
       path: '/type'
     }, {
-      name: '属性',
       path: '/attribute'
     }, {
-      name: '属性值',
       path: '/attributeValue'
     }, {
-      name: '颜色',
       path: '/color'
     }, {
-      name: '颜色组',
       path: '/colorGroup'
     }, {
-      name: '尺码域',
       path: '/sizeArea'
     }, {
-      name: '尺码',
       path: '/size'
     }, {
-      name: '尺码组',
       path: '/sizeGroup'
     }, {
-      name: '审核',
       path: '/audit'
     }]
   }, {
-    name: '系统参数',
-    path: '/systemParameter'
+    path: 'systemParameter'
   }, {
-    name: '参数标签',
-    path: '/parameterTags'
+    path: 'parameterTags'
   }, {
-    name: '参数组合',
-    path: '/parameterGroup'
+    path: 'parameterGroup'
   }, {
-    name: '投票活动',
-    path: '/votingActivity'
+    path: 'votingActivity'
   }]
 }
 

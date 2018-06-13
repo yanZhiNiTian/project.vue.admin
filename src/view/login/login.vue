@@ -27,7 +27,9 @@
   </div>
 </template>
 <script>
-import { login } from '../../api/login/login.js';
+import { mapActions, mapGetters } from 'vuex';
+
+import { login, userPower } from '../../api/login/login.js';
 import { setSessionId } from '../../util/auth.js';
 export default {
   name: 'login',
@@ -53,9 +55,12 @@ export default {
     }
   },
   // 计算属性
-  computed: {},
+  computed: {
+    ...mapGetters(['sessionId']) // 用户id
+  },
   // 事件挂载
   methods: {
+    ...mapActions(['setSessionId', 'setMenu', 'setAsynRouter']), // 设置用户id，左侧菜单，异步路由
     login() {
       let _this = this;
       _this.$refs['loginForm'].validate((valid) => {
@@ -65,7 +70,26 @@ export default {
             password: _this.loginForm.password
           }).then((res) => {
             if (res['code'] === 0) {
-              setSessionId(res['data']['sessionId'])
+              let _sessionId = res['data']['sessionId'];
+              setSessionId(_sessionId);
+              _this.setSessionId(_sessionId);
+              userPower({
+                sessionId: _this.sessionId
+              }).then((resUserPower) => {
+                let _menu = resUserPower['data']['menu'];
+                let _asynRouter = resUserPower['data']['asynRouter'];
+                console.error(JSON.parse(JSON.stringify(_asynRouter)))
+                _this.setMenu(_menu);
+                _this.setAsynRouter(_asynRouter);
+                _asynRouter.forEach((element) => {
+                  _this.$router.options.routes[1]['children'].push(element)
+                })
+                _this.$router.push({
+                  path: '/dashboard'
+                });
+              }, (errUserPowe) => {
+                console.log(errUserPowe)
+              })
             }
           }, (err) => {
             console.log(err)
@@ -90,9 +114,7 @@ export default {
   // el 被新创建的 vm.$el 替换，并挂载到实例上去之后调用该钩子。如果 root 实例挂载了一个文档内元素，当 mounted 被调用时 vm.$el 也在文档内。
   // 注意 mounted 不会承诺所有的子组件也都一起被挂载。如果你希望等到整个视图都渲染完毕，可以用 vm.$nextTick 替换掉 mounted：
   mounted() {
-    this.$nextTick(function() {
-
-    })
+    this.$nextTick(function() {})
   },
   // 数据更新时调用，发生在虚拟 DOM 打补丁之前。这里适合在更新之前访问现有的 DOM，比如手动移除已添加的事件监听器。
   // 该钩子在服务器端渲染期间不被调用，因为只有初次渲染会在服务端进行。

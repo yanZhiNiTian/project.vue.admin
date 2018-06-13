@@ -1,41 +1,36 @@
 <template>
-  <el-container class="layout-sup-container">
-    <el-header class="layout-sup-header">
-      <ec-sup-header></ec-sup-header>
-    </el-header>
-    <el-container class="layout-mid-container">
-      <el-aside class="layout-mid-aside">
-        <ec-mid-aside></ec-mid-aside>
-      </el-aside>
-      <el-container class="layout-sub-container">
-        <el-header class="layout-sub-header" height="30px">小导航</el-header>
-        <el-main class="layout-sub-main">
-          <router-view/>
-        </el-main>
-      </el-container>
-    </el-container>
-  </el-container>
+  <div class="ec-sup-header" id="ecSupHeader">
+    <h4 class="welcome-msg">
+      欢迎登录市场营销管理后台
+    </h4>
+    <div class="sign-out-btn">
+      <el-button size="small" @click="signOut">退出</el-button>
+    </div>
+  </div>
 </template>
 <script>
-import ecSupHeader from './ecSupHeader.vue';
-import ecMidAside from './ecMidAside.vue';
+import { removeSessionId } from '../../util/auth.js';
 export default {
-  name: 'home',
+  name: 'ecSupHeader',
   mixins: [],
   // 从父组件接受的属性
   props: {},
   // 组件
-  components: {
-    ecSupHeader,
-    ecMidAside
-  },
+  components: {},
   data() {
     return {}
   },
   // 计算属性
   computed: {},
   // 事件挂载
-  methods: {},
+  methods: {
+    signOut() {
+      removeSessionId();
+      this.$router.push({
+        path: '/login'
+      })
+    }
+  },
   watch: {},
   // 在实例初始化之后，数据观测 (data observer) 和 event/watcher 事件配置之前被调用
   beforeCreate() {},
@@ -46,9 +41,7 @@ export default {
   // el 被新创建的 vm.$el 替换，并挂载到实例上去之后调用该钩子。如果 root 实例挂载了一个文档内元素，当 mounted 被调用时 vm.$el 也在文档内。
   // 注意 mounted 不会承诺所有的子组件也都一起被挂载。如果你希望等到整个视图都渲染完毕，可以用 vm.$nextTick 替换掉 mounted：
   mounted() {
-    this.$nextTick(function() {
-      console.log(this.$router)
-    })
+    this.$nextTick(function() {})
   },
   // 数据更新时调用，发生在虚拟 DOM 打补丁之前。这里适合在更新之前访问现有的 DOM，比如手动移除已添加的事件监听器。
   // 该钩子在服务器端渲染期间不被调用，因为只有初次渲染会在服务端进行。
@@ -75,26 +68,20 @@ export default {
 
 </script>
 <style lang="scss" scoped>
-.layout-sup-container {
-  width: 100vw;
-  height: 100vh;
-  .layout-sup-header {
-    padding: 0;
+.ec-sup-header {
+  display: flex;
+  background-color: #fff;
+  box-shadow: 0 1px 7px 0;
+  justify-content: space-between;
+  padding: 10px 20px;
+  .welcome-msg {
+    line-height: 40px;
+    height: 40px;
+    flex: 1;
   }
-  .layout-mid-container {
-    height: calc(100vh - 60px);
-    .layout-mid-aside {
-      height: calc(100vh - 60px);
-    }
-    .layout-sub-container {
-      height: calc(100vh - 60px);
-      .layout-sub-header {}
-      .layout-sub-main {
-        overflow-x: hidden;
-        overflow-y: auto;
-        height: calc(100vh - 80px);
-      }
-    }
+  .sign-out-btn {
+    width: 56px;
+    padding: 4px 0;
   }
 }
 
