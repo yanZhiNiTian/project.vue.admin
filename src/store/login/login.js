@@ -2,31 +2,37 @@
  * @Author: wdy
  * @Date:   2018-06-13 17:27:15
  * @Last Modified by:   wdy
- * @Last Modified time: 2018-06-13 17:31:27
+ * @Last Modified time: 2018-06-19 16:36:00
  */
 
 import * as types from '@/store/mutation-types';
 
 const state = {
-  sessionId: '', // 用户id
   menu: [], // 左侧菜单
+  sessionId: '', // 用户id
+  userPower: {}, // 用户权限树，包括menu,asynRouter,粒度级按钮控制
   asynRouter: [] // 异步路由
 }
 
 const getters = {
-  sessionId: state => state.sessionId, // 用户id
   menu: state => state.menu, // 左侧菜单
+  sessionId: state => state.sessionId, // 用户id
+  userPower: state => state.userPower, // 用户权限树，包括menu,asynRouter,粒度级按钮控制
   asynRouter: state => state.asynRouter // 异步路由
 };
 
 const mutations = {
+  // 左侧菜单
+  [types.SET_MENU](state, menu) {
+    state.menu = menu;
+  },
   // 用户id
   [types.SET_SESSION_ID](state, sessionId) {
     state.sessionId = sessionId;
   },
-  // 左侧菜单
-  [types.SET_MENU](state, menu) {
-    state.menu = menu;
+  // 用户权限树，包括menu,asynRouter,粒度级按钮控制
+  [types.SET_USER_POWER](state, userPower) {
+    state.userPower = userPower;
   },
   // 异步路由
   [types.SET_ASYN_ROUTER](state, asynRouter) {
@@ -35,17 +41,24 @@ const mutations = {
 }
 
 const actions = {
-  // 用户id
-  setSessionId({ commit, state }, sessionId) {
-    commit(types.SET_SESSION_ID, sessionId);
-  },
   // 左侧菜单
   setMenu({ commit, state }, menu) {
     commit(types.SET_MENU, menu);
   },
+  // 用户id
+  setSessionId({ commit, state }, sessionId) {
+    commit(types.SET_SESSION_ID, sessionId);
+  },
+  // 用户权限树，包括menu,asynRouter,粒度级按钮控制
+  setUserPower({ commit, state }, userPower) {
+    commit(types.SET_USER_POWER, userPower);
+  },
   // 异步路由
   setAsynRouter({ commit, state }, asynRouter) {
-    commit(types.SET_ASYN_ROUTER, asynRouter);
+    return new Promise((resolve) => {
+      commit(types.SET_ASYN_ROUTER, asynRouter);
+      resolve()
+    })
   }
 }
 

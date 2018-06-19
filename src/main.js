@@ -10,8 +10,10 @@ import Vue from 'vue';
 import ElementUI from 'element-ui';
 import App from './App.vue';
 
-import router from './router/index';
-import store from './store';
+import router from './router/index.js'; // router
+import store from './store/index.js'; // vuex
+
+import './permission.js'; // 权限控制
 
 import './mock/mockList.js';
 

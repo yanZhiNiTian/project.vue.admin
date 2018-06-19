@@ -41,8 +41,8 @@ export default {
   data() {
     return {
       loginForm: {
-        account: '',
-        password: ''
+        account: 'admin',
+        password: '000000'
       },
       loginRules: {
         account: [
@@ -60,7 +60,7 @@ export default {
   },
   // 事件挂载
   methods: {
-    ...mapActions(['setSessionId', 'setMenu', 'setAsynRouter']), // 设置用户id，左侧菜单，异步路由
+    ...mapActions(['setSessionId', 'setMenu', 'setUserPower', 'setAsynRouter']), // 设置用户id，左侧菜单，(用户权限树，包括menu,asynRouter,粒度级按钮控制)
     login() {
       let _this = this;
       _this.$refs['loginForm'].validate((valid) => {
@@ -76,17 +76,16 @@ export default {
               userPower({
                 sessionId: _this.sessionId
               }).then((resUserPower) => {
-                let _menu = resUserPower['data']['menu'];
-                let _asynRouter = resUserPower['data']['asynRouter'];
-                console.error(JSON.parse(JSON.stringify(_asynRouter)))
+                let _userPower = resUserPower['data'];
+                let _menu = _userPower['menu'];
+
                 _this.setMenu(_menu);
-                _this.setAsynRouter(_asynRouter);
-                _asynRouter.forEach((element) => {
-                  _this.$router.options.routes[1]['children'].push(element)
-                })
+                _this.setUserPower(_userPower);
+                _this.setAsynRouter([]);
                 _this.$router.push({
                   path: '/dashboard'
                 });
+                // _this.$router.push({ path: '/' })
               }, (errUserPowe) => {
                 console.log(errUserPowe)
               })
@@ -146,7 +145,6 @@ export default {
   overflow: hidden;
   width: 100vw;
   height: 100vh;
-  background-image: url('../../assets/images/login/login-bg.png');
 }
 
 .login-form {

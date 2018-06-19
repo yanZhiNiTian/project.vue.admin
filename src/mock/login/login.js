@@ -2,10 +2,11 @@
  * @Author: wdy
  * @Date:   2018-06-13 10:23:33
  * @Last Modified by:   wdy
- * @Last Modified time: 2018-06-13 18:32:35
+ * @Last Modified time: 2018-06-19 16:04:56
  */
 const login = {
-  sessionId: '@guid'
+  sessionId: '@guid',
+  userType: 'admin'
 };
 const userPower = {
   // 左侧菜单
@@ -83,47 +84,68 @@ const userPower = {
   }],
   // 异步路由
   asynRouter: [{
-    path: 'paperList',
+    path: '/paperList',
     children: [{
-      path: '/normalPaperList'
+      path: 'normalPaperList'
     }, {
-      path: '/randomPaperList'
+      path: 'randomPaperList'
     }]
   }, {
-    path: 'activityList'
-  }, {
-    path: 'questionBank'
-  }, {
-    path: 'advertisingPicture'
-  }, {
-    path: 'dataStandardization',
+    path: '/activityList',
     children: [{
-      path: '/type'
-    }, {
-      path: '/attribute'
-    }, {
-      path: '/attributeValue'
-    }, {
-      path: '/color'
-    }, {
-      path: '/colorGroup'
-    }, {
-      path: '/sizeArea'
-    }, {
-      path: '/size'
-    }, {
-      path: '/sizeGroup'
-    }, {
-      path: '/audit'
+      path: 'index'
     }]
   }, {
-    path: 'systemParameter'
+    path: '/questionBank',
+    children: [{
+      path: 'index'
+    }]
   }, {
-    path: 'parameterTags'
+    path: '/advertisingPicture',
+    children: [{
+      path: 'index'
+    }]
   }, {
-    path: 'parameterGroup'
+    path: '/dataStandardization',
+    children: [{
+      path: 'type'
+    }, {
+      path: 'attribute'
+    }, {
+      path: 'attributeValue'
+    }, {
+      path: 'color'
+    }, {
+      path: 'colorGroup'
+    }, {
+      path: 'sizeArea'
+    }, {
+      path: 'size'
+    }, {
+      path: 'sizeGroup'
+    }, {
+      path: 'audit'
+    }]
   }, {
-    path: 'votingActivity'
+    path: '/systemParameter',
+    children: [{
+      path: 'index'
+    }]
+  }, {
+    path: '/parameterTags',
+    children: [{
+      path: 'index'
+    }]
+  }, {
+    path: '/parameterGroup',
+    children: [{
+      path: 'index'
+    }]
+  }, {
+    path: '/votingActivity',
+    children: [{
+      path: 'index'
+    }]
   }]
 }
 

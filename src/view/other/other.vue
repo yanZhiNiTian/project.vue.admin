@@ -1,32 +1,11 @@
 <template>
-  <el-menu default-active="/" unique-opened router>
-    <el-menu-item index="/">
-      <i class="fa fa-home"></i>
-      <span slot="title">主页</span>
-    </el-menu-item>
-    <div v-for="( element, index ) in menu" :key="index">
-      <el-submenu v-if="element.children" :index="countIndex( index )">
-        <template slot="title">
-          <i class="fa" :class="element.icon"></i>
-          <span slot="title">{{ element.name }}</span>
-        </template>
-        <el-menu-item v-for="( el, idx ) in element.children" :key="idx" :index="countIndex( index, idx )" :route="countPath( element.path , el.path )">
-          {{ el.name }}
-        </el-menu-item>
-      </el-submenu>
-      <el-menu-item v-if="!element.children" :index="countIndex(index)" :route="countPath( element.path )">
-        <template slot="title">
-          <i class="fa" :class="element.icon"></i>
-          <span slot="title">{{ element.name }}</span>
-        </template>
-      </el-menu-item>
-    </div>
-  </el-menu>
+  <div class="other" id="other">
+    other
+  </div>
 </template>
 <script>
-import { mapGetters } from 'vuex';
 export default {
-  name: 'ecMidAside',
+  name: 'other',
   mixins: [],
   // 从父组件接受的属性
   props: {},
@@ -36,18 +15,9 @@ export default {
     return {}
   },
   // 计算属性
-  computed: {
-    ...mapGetters(['menu'])
-  },
+  computed: {},
   // 事件挂载
-  methods: {
-    countIndex(supIndex, subIndex) {
-      return subIndex ? `${supIndex + 1}-${subIndex}` : `${supIndex + 1}`
-    },
-    countPath(supPath, subPath) {
-      return subPath ? `${supPath}${subPath}` : `${supPath}`
-    }
-  },
+  methods: {},
   watch: {},
   // 在实例初始化之后，数据观测 (data observer) 和 event/watcher 事件配置之前被调用
   beforeCreate() {},
@@ -82,11 +52,7 @@ export default {
     console.error('errorCaptured', err, vm, info)
   }
 }
-
 </script>
 <style lang="scss" scoped>
-.el-menu {
-  height: calc(100vh - 60px)
-}
 
 </style>
