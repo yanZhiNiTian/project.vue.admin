@@ -1,45 +1,33 @@
 <template>
-  <el-container class="layout-sup-container">
-    <el-header class="layout-sup-header">
-      <ec-sup-header></ec-sup-header>
-    </el-header>
-    <el-container class="layout-mid-container">
-      <el-aside class="layout-mid-aside">
-        <ec-mid-aside></ec-mid-aside>
-      </el-aside>
-      <el-container class="layout-sub-container">
-        <el-header class="layout-sub-header" height="40px">
-          <ec-sub-header></ec-sub-header>
-        </el-header>
-        <el-main class="layout-sub-main">
-          <router-view/>
-        </el-main>
-      </el-container>
-    </el-container>
-  </el-container>
+  <ul class="nav nav-tabs ec-sub-header">
+    <li class="nav-item" v-for="el in subNavList" :key="el.pathUrl">
+      <a class="nav-link" :class="{'active' : el.pathUrl === $route.path}" href="javascript:;" @click="activeNav(el)">
+        {{ el.pathName }}
+        <i class="el-icon-close" @click.stop="delNav(el)"></i>
+      </a>
+    </li>
+  </ul>
 </template>
 <script>
-import ecSupHeader from './ecSupHeader.vue';
-import ecMidAside from './ecMidAside.vue';
-import ecSubHeader from './ecSubHeader.vue';
+import { mapGetters, mapActions } from 'vuex';
 export default {
-  name: 'home',
+  name: 'ecSubHeader',
   mixins: [],
   // 从父组件接受的属性
   props: {},
   // 组件
-  components: {
-    ecSupHeader,
-    ecMidAside,
-    ecSubHeader
-  },
+  components: {},
   data() {
     return {}
   },
   // 计算属性
-  computed: {},
+  computed: {
+    ...mapGetters(['subNavList'])
+  },
   // 事件挂载
-  methods: {},
+  methods: {
+    ...mapActions(['activeNav', 'delNav'])
+  },
   watch: {},
   // 在实例初始化之后，数据观测 (data observer) 和 event/watcher 事件配置之前被调用
   beforeCreate() {},
@@ -77,39 +65,6 @@ export default {
 
 </script>
 <style lang="scss" scoped>
-.layout-sup-container {
-  width: 100vw;
-  height: 100vh;
-  .layout-sup-header {
-    padding: 0;
-    margin-bottom: 2px;
-    box-shadow: 0 1px 10px 0;
-  }
-  .layout-mid-container {
-    height: calc(100vh - 60px - 2px);
-    .layout-mid-aside {
-      height: calc(100vh - 60px - 2px);
-    }
-    .layout-sub-container {
-      height: calc(100vh - 60px - 2px);
-      padding: 10px;
-      background-color: #f2f2f2;
-
-      .layout-sub-header {
-        background-color: #fff;
-        padding: 0;
-      }
-      .layout-sub-main {
-        overflow-x: hidden;
-        overflow-y: auto;
-        height: calc(100vh - 60px - 40px - 2px);
-        background-color: #fff;
-        border-right: solid 1px #dee2e6;
-        border-bottom: solid 1px #dee2e6;
-        border-left: solid 1px #dee2e6;
-      }
-    }
-  }
-}
+.ec-sub-header {}
 
 </style>

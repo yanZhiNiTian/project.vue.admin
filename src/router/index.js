@@ -2,7 +2,7 @@
  * @Author: wdy
  * @Date:   2018-06-13 09:31:31
  * @Last Modified by:   wdy
- * @Last Modified time: 2018-06-19 15:52:32
+ * @Last Modified time: 2018-06-20 16:52:32
  */
 import Vue from 'vue';
 import Router from 'vue-router';
@@ -26,12 +26,12 @@ export default new Router({
     children: [{
       path: 'dashboard',
       component: Dashboard
+    }, {
+      path: 'page404',
+      component: Page404
+    }, {
+      path: 'page401',
+      component: Page401
     }]
-  }, {
-    path: '/page404',
-    component: Page404
-  }, {
-    path: '/page401',
-    component: Page401
   }]
 });

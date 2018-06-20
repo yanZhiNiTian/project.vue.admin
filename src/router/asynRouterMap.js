@@ -2,7 +2,7 @@
  * @Author: wdy
  * @Date:   2018-06-19 15:52:15
  * @Last Modified by:   wdy
- * @Last Modified time: 2018-06-19 16:32:47
+ * @Last Modified time: 2018-06-20 16:50:50
  */
 import Home from '@/view/home/home.vue';
 
@@ -121,6 +121,9 @@ const asynRouterMap = [{
     component: () =>
       import ('@/view/other/other.vue')
   }]
+}, {
+  path: '*',
+  redirect: '/page404'
 }];
 
 export default asynRouterMap

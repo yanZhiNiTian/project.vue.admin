@@ -1,20 +1,20 @@
 <template>
-  <el-menu default-active="/" unique-opened router>
-    <el-menu-item index="/">
+  <el-menu class="ec-mid-aside" :default-active="$route.path" unique-opened>
+    <el-menu-item index="/dashboard" @click="toHome">
       <i class="fa fa-home"></i>
       <span slot="title">主页</span>
     </el-menu-item>
-    <div v-for="( element, index ) in menu" :key="index">
-      <el-submenu v-if="element.children" :index="countIndex( index )">
+    <div v-for="element in menu" :key="countIndex( element )">
+      <el-submenu v-if="element.children" :index="countIndex( element )">
         <template slot="title">
           <i class="fa" :class="element.icon"></i>
           <span slot="title">{{ element.name }}</span>
         </template>
-        <el-menu-item v-for="( el, idx ) in element.children" :key="idx" :index="countIndex( index, idx )" :route="countPath( element.path , el.path )">
+        <el-menu-item v-for="el in element.children" :key="countIndex( element, el )" :index="countIndex( element, el )" @click="toPage(element, el)">
           {{ el.name }}
         </el-menu-item>
       </el-submenu>
-      <el-menu-item v-if="!element.children" :index="countIndex(index)" :route="countPath( element.path )">
+      <el-menu-item v-if="!element.children" :index="countIndex( element )" @click="toPage(element)">
         <template slot="title">
           <i class="fa" :class="element.icon"></i>
           <span slot="title">{{ element.name }}</span>
@@ -24,7 +24,7 @@
   </el-menu>
 </template>
 <script>
-import { mapGetters } from 'vuex';
+import { mapGetters, mapActions } from 'vuex';
 export default {
   name: 'ecMidAside',
   mixins: [],
@@ -41,11 +41,27 @@ export default {
   },
   // 事件挂载
   methods: {
-    countIndex(supIndex, subIndex) {
-      return subIndex ? `${supIndex + 1}-${subIndex}` : `${supIndex + 1}`
+    ...mapActions(['addNav']),
+    countIndex(element, el) {
+      return el ? `${element.path}${el.path}` : `${element.path}/index`
     },
-    countPath(supPath, subPath) {
-      return subPath ? `${supPath}${subPath}` : `${supPath}`
+    toHome() {
+      this.addNav({
+        pathName: '主页',
+        pathUrl: '/dashboard'
+      })
+    },
+    toPage(element, el) {
+      let _this = this;
+      let _pathUrl = el ? element['path'] + el['path'] : element['path'] + '/index';
+      let _pathName = el ? element['name'] + '·' + el['name'] : element['name'];
+      // _this.$router.push({
+      //   path: _pathUrl
+      // });
+      _this.addNav({
+        pathName: _pathName,
+        pathUrl: _pathUrl
+      })
     }
   },
   watch: {},

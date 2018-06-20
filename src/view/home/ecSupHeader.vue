@@ -71,7 +71,6 @@ export default {
 .ec-sup-header {
   display: flex;
   background-color: #fff;
-  box-shadow: 0 1px 7px 0;
   justify-content: space-between;
   padding: 10px 20px;
   .welcome-msg {
