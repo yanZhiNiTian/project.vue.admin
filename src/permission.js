@@ -2,7 +2,7 @@
  * @Author: wdy
  * @Date:   2018-06-19 10:41:10
  * @Last Modified by:   wdy
- * @Last Modified time: 2018-06-19 16:37:09
+ * @Last Modified time: 2018-06-20 16:59:38
  */
 
 import store from './store/index.js';
@@ -24,7 +24,7 @@ router.beforeEach((to, from, next) => {
         let asynRouter = store.getters.userPower['asynRouter'];
         store.dispatch('setAsynRouter', asynRouter).then(() => {
           /**
-           * [finallyasynRouter 此处应该根据用户权限的asyncRouter和本地的asyncRouterMap，生成finallyasynRouter]
+           * [finallyasynRouter 此处应该根据用户权限的asyncRouter和本地的asyncRouterMap，生成finallyasynRouter，这里无脑了]
            */
           let finallyasynRouter = asynRouterMap || asynRouter;
           router.addRoutes(finallyasynRouter) // 动态添加可访问路由表
