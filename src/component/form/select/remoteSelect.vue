@@ -1,86 +1,115 @@
 <template>
-  <div class="dashboard" id="dashboard">
-    {{ selectOptions }}
-    <ec-select :props-config="selectConfig" :props-options="selectOptions" :mutual-data.sync="selectValue" :mutual-caption-data.sync="selectLabel"></ec-select>
-    <ec-remote-select :props-config="ecRemoteSelectConfig" :mutual-data.sync="remoteSelectValue" :mutual-caption-data.sync="remoteSelectLabel"></ec-remote-select>
-    <ec-multiple-select :props-config="multipleSelectConfig" :props-options="multipleSelectOptions" :mutual-data.sync="multipleSelectValue" :mutual-caption-data.sync="multipleSelectLabel"></ec-multiple-select>
+  <div class="ec-select" id="ecSelect">
+    <label v-if="config.label" for="">
+      {{ config.label }}
+    </label>
+    <!-- 远程select -->
+    <el-select v-model="modelData" :placeholder="config.placeholder" :disabled="config.disabled" :remote-method="remoteMethod" :loading="loading" size="small" filterable remote>
+      <el-option v-for="el in options" :key="el.value" :label="el.label" :value="el.value">
+      </el-option>
+    </el-select>
   </div>
 </template>
 <script>
-import ecSelect from '@/component/form/select/select.vue';
-import ecRemoteSelect from '@/component/form/select/remoteSelect.vue';
-import ecMultipleSelect from '@/component/form/select/multipleSelect.vue';
+import { deepClone } from 'outils';
+import { mixinsObject } from '@/util/utils.js';
+import { remoteSelect } from '@/api/common/remoteSelect.js';
+var timeout;
 export default {
-  name: 'dashboard',
+  name: 'ecSelect',
   mixins: [],
   // 从父组件接受的属性
-  props: {},
-  // 组件
-  components: {
-    ecSelect,
-    ecRemoteSelect,
-    ecMultipleSelect
+  props: {
+    // 传递的配置文件
+    propsConfig: Object,
+    // 绑定的数据
+    mutualData: {
+      type: String,
+      default: ''
+    },
+    // 展示的数据
+    mutualCaptionData: {
+      type: String,
+      default: ''
+    }
   },
+  // 组件
+  components: {},
   data() {
     return {
-      // 普通下拉
-      selectConfig: {
-        label: '测试', // 搜索的label
-        multiple: true, // 是否开启多选
-        filterable: false, // 是否开启搜索功能
-        placeholder: '请选择', // placeholder
+      config: {
+        label: '', // 搜索的label
+        apiConfig: '', // 远程url的key
         disabled: false, // select是否禁用
-        clearable: true // select是否可以被清空
+        placeholder: '请选择' // placeholder
       },
-      selectOptions: [],
-      selectValue: '2',
-      selectLabel: '测试2',
-      // 多选下拉
-      multipleSelectConfig: {
-        label: '测试', // 搜索的label
-        placeholder: '请选择', // placeholder
-        disabled: false // select是否禁用
-      },
-      multipleSelectOptions: [],
-      multipleSelectValue: '2',
-      multipleSelectLabel: '多选测试2',
-      // 远程搜索
-      ecRemoteSelectConfig: {
-        label: '远程测试', // 搜索的label
-        apiConfig: 'ecRemoteSelectApiConfig', // 远程url的key
-        disabled: false, // select是否禁用
-        placeholder: '请输入' // placeholder
-      },
-      remoteSelectValue: '',
-      remoteSelectLabel: ''
+      loading: false, // 是否正在从远程获取数据
+      options: [], // 搜索的options
+      modelData: this.mutualData // 核心数据
     }
   },
   // 计算属性
-  computed: {},
+  computed: {
+    // 计算展示的data
+    captionData() {
+      let _this = this;
+      let _options = deepClone(_this.options); // options
+      let _modelData = _this.modelData; // 核心数据
+      let _mutualData = '';
+      _options.forEach(el => {
+        if (el.value === _modelData) {
+          _mutualData = el.label
+        }
+      });
+      return _mutualData
+    }
+  },
   // 事件挂载
-  methods: {},
-  watch: {},
+  methods: {
+    /**
+     * [initConfig 根据传入的propsConfig，初始化config]
+     */
+    initProps() {
+      let _this = this;
+      mixinsObject(_this.config, _this.propsConfig);
+    },
+    remoteMethod(query) {
+      let _this = this;
+      clearTimeout(timeout);
+      timeout = setTimeout(function() {
+        _this.loading = true;
+        remoteSelect({
+          key: _this.config.apiConfig,
+          query: query
+        }).then((res) => {
+          _this.loading = false;
+          _this.options = res['data']
+        })
+      }, 1000);
+    }
+  },
+  watch: {
+    modelData: {
+      handler: function(val, oldVal) {
+        this.$emit('update:mutualData', val)
+      },
+      deep: true
+    },
+    captionData: {
+      handler: function(val, oldVal) {
+        this.$emit('update:mutualCaptionData', val)
+      },
+      deep: true
+    }
+  },
   // 在实例初始化之后，数据观测 (data observer) 和 event/watcher 事件配置之前被调用
   beforeCreate() {},
   // 在实例创建完成后被立即调用。在这一步，实例已完成以下的配置：数据观测 (data observer)，属性和方法的运算，watch/event 事件回调。然而，挂载阶段还没开始，$el 属性目前不可见。
-  created() {
-    this.selectOptions = [0, 1, 2, 3].map(item => {
-      return {
-        label: `普通测试${item + 1}`,
-        value: `${item + 1}`,
-        disabled: Boolean(`${item === 2 ? 1 : 0}`)
-      }
-    });
-    this.multipleSelectOptions = [0, 1, 2, 3].map(item => {
-      return {
-        label: `多选测试${item + 1}`,
-        value: `${item + 1}`,
-        disabled: Boolean(`${item === 1 ? 1 : 0}`)
-      }
-    })
-  },
+  created() {},
   // 在挂载开始之前被调用：相关的 render 函数首次被调用。
-  beforeMount() {},
+  beforeMount() {
+    this.initProps();
+  },
   // el 被新创建的 vm.$el 替换，并挂载到实例上去之后调用该钩子。如果 root 实例挂载了一个文档内元素，当 mounted 被调用时 vm.$el 也在文档内。
   // 注意 mounted 不会承诺所有的子组件也都一起被挂载。如果你希望等到整个视图都渲染完毕，可以用 vm.$nextTick 替换掉 mounted：
   mounted() {
@@ -110,7 +139,7 @@ export default {
 }
 
 </script>
-<style scoped>
-.dashboard {}
+<style lang="scss" scoped>
+.ec-select {}
 
 </style>

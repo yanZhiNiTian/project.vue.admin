@@ -1,12 +1,16 @@
 <template>
-  <ul class="nav nav-tabs ec-sub-header">
+  <!-- <ul class="nav nav-tabs ec-sub-header">
     <li class="nav-item" v-for="el in subNavList" :key="el.pathUrl">
       <a class="nav-link" :class="{'active' : el.pathUrl === $route.path}" href="javascript:;" @click="activeNav(el)">
         {{ el.pathName }}
         <i class="el-icon-close" @click.stop="delNav(el)"></i>
       </a>
     </li>
-  </ul>
+  </ul> -->
+  <el-tabs v-model="activeIndex" type="card" closable @tab-click="clickTab" @tab-remove="removeTab">
+    <el-tab-pane v-for="el in subNavList" :key="el.pathUrl" :label="el.pathName" :name="el.pathUrl">
+    </el-tab-pane>
+  </el-tabs>
 </template>
 <script>
 import { mapGetters, mapActions } from 'vuex';
@@ -22,11 +26,45 @@ export default {
   },
   // 计算属性
   computed: {
-    ...mapGetters(['subNavList'])
+    ...mapGetters(['subNavList', 'historyNavList']),
+    activeIndex: {
+      get: function() {
+        let _historyNavList = this.historyNavList;
+        return _historyNavList[_historyNavList.length - 1]
+      },
+      set: function(newValue) {
+        return ''
+      }
+    }
   },
   // 事件挂载
   methods: {
-    ...mapActions(['activeNav', 'delNav'])
+    ...mapActions(['activeNav', 'delNav']),
+    clickTab(tab) {
+      let _this = this;
+      _this.activeNav({
+        pathUrl: tab.name,
+        pathName: tab.label
+      })
+    },
+    removeTab(tabName, event) {
+      let _this = this;
+      let _subNavList = _this.subNavList;
+      let _removeTab;
+      if (_subNavList.length > 1) {
+        _subNavList.forEach(element => {
+          if (element.pathUrl === tabName) {
+            _removeTab = element;
+          }
+        });
+        _this.delNav(_removeTab)
+      } else {
+        _this.$message({
+          message: '最后一个tab标签无法删掉呦！',
+          type: 'warning'
+        })
+      }
+    }
   },
   watch: {},
   // 在实例初始化之后，数据观测 (data observer) 和 event/watcher 事件配置之前被调用

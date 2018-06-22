@@ -69,27 +69,24 @@ export default {
             account: _this.loginForm.account,
             password: _this.loginForm.password
           }).then((res) => {
-            if (res['code'] === 0) {
-              let _sessionId = res['data']['sessionId'];
-              setSessionId(_sessionId);
-              _this.setSessionId(_sessionId);
-              userPower({
-                sessionId: _this.sessionId
-              }).then((resUserPower) => {
-                let _userPower = resUserPower['data'];
-                let _menu = _userPower['menu'];
+            let _sessionId = res['sessionId'];
+            setSessionId(_sessionId);
+            _this.setSessionId(_sessionId);
+            userPower({
+              sessionId: _this.sessionId
+            }).then((resUserPower) => {
+              let _userPower = resUserPower;
+              let _menu = _userPower['menu'];
 
-                _this.setMenu(_menu);
-                _this.setUserPower(_userPower);
-                _this.setAsynRouter([]);
-                _this.$router.push({
-                  path: '/dashboard'
-                });
-                // _this.$router.push({ path: '/' })
-              }, (errUserPowe) => {
-                console.log(errUserPowe)
-              })
-            }
+              _this.setMenu(_menu);
+              _this.setUserPower(_userPower);
+              _this.setAsynRouter([]);
+              _this.$router.push({
+                path: '/dashboard'
+              });
+            }, (errUserPower) => {
+              console.log(errUserPower)
+            })
           }, (err) => {
             console.log(err)
           })

@@ -2,7 +2,7 @@
  * @Author: wdy
  * @Date:   2018-06-13 17:27:15
  * @Last Modified by:   wdy
- * @Last Modified time: 2018-06-20 16:46:49
+ * @Last Modified time: 2018-06-20 18:06:07
  */
 
 import * as types from '@/store/mutation-types';
@@ -62,19 +62,11 @@ const mutations = {
         path: _subNavUrl
       });
     } else {
-      // 子菜单长度不可超过8个，防止掉落
-      if (_subNavList.length < 8) {
-        _subNavList.push(subNav);
-        state.historyNavList.push(_subNavUrl);
-        router.push({
-          path: _subNavUrl
-        })
-      } else {
-        Message({
-          message: 'tab标签太多，塞不下了',
-          type: 'warning'
-        })
-      }
+      _subNavList.push(subNav);
+      state.historyNavList.push(_subNavUrl);
+      router.push({
+        path: _subNavUrl
+      })
     }
   },
   // 删除某个菜单
