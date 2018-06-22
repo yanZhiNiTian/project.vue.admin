@@ -1,115 +1,67 @@
 <template>
-  <div class="ec-select" id="ecSelect">
-    <label v-if="config.label" for="">
-      {{ config.label }}
-    </label>
-    <!-- 远程select -->
-    <el-select v-model="modelData" :placeholder="config.placeholder" :disabled="config.disabled" :remote-method="remoteMethod" :loading="loading" size="small" filterable remote>
-      <el-option v-for="el in options" :key="el.value" :label="el.label" :value="el.value">
-      </el-option>
-    </el-select>
+  <div class="dashboard-cascader" id="dashboardCascader">
+    <ec-normal-cascader :props-config="normalCascaderConfig" :props-options="normalCascaderOptions" :props-data.sync="normalCascaderPropsData" :props-caption-data.sync="normalCascaderPropsCaptionData"></ec-normal-cascader>
+    {{ normalCascaderPropsData }}
+    {{ normalCascaderPropsCaptionData }}
   </div>
 </template>
 <script>
-import { deepClone } from 'outils';
-import { mixinsObject } from '@/util/utils.js';
-import { remoteSelect } from '@/api/common/remoteSelect.js';
-var timeout;
+function createNaturalNumberList(length) {
+  return new Array(length).fill(1).map((item, idx) => idx + 1)
+}
+
+function createCascaderOption() {
+  let _numberArray = createNaturalNumberList(3);
+  let _cascaderOption = _numberArray.map(element => {
+    return {
+      label: `item ${element}`,
+      value: `${element}`,
+      children: _numberArray.map(elem => {
+        return {
+          label: `item ${element}-${elem}`,
+          value: `${element}-${elem}`,
+          children: _numberArray.map(el => {
+            return {
+              label: `item ${element}-${elem}-${el}`,
+              value: `${element}-${elem}-${el}`
+            }
+          })
+        }
+      })
+    }
+  });
+  return _cascaderOption
+}
+
 export default {
-  name: 'ecSelect',
+  name: 'dashboardCascader',
   mixins: [],
   // 从父组件接受的属性
-  props: {
-    // 传递的配置文件
-    propsConfig: Object,
-    // 绑定的数据
-    mutualData: {
-      type: String,
-      default: ''
-    },
-    // 展示的数据
-    mutualCaptionData: {
-      type: String,
-      default: ''
-    }
-  },
+  props: {},
   // 组件
   components: {},
   data() {
     return {
-      config: {
-        label: '', // 搜索的label
-        apiConfig: '', // 远程url的key
-        disabled: false, // select是否禁用
-        placeholder: '请选择' // placeholder
+      // 级联选择
+      normalCascaderConfig: {
+        label: '普通级联'
       },
-      loading: false, // 是否正在从远程获取数据
-      options: [], // 搜索的options
-      modelData: this.mutualData // 核心数据
+      normalCascaderOptions: createCascaderOption(),
+      normalCascaderPropsData: '1,1-1,1-1-1',
+      normalCascaderPropsCaptionData: 'item 1,item 1-1,item 1-1-1'
     }
   },
   // 计算属性
-  computed: {
-    // 计算展示的data
-    captionData() {
-      let _this = this;
-      let _options = deepClone(_this.options); // options
-      let _modelData = _this.modelData; // 核心数据
-      let _mutualData = '';
-      _options.forEach(el => {
-        if (el.value === _modelData) {
-          _mutualData = el.label
-        }
-      });
-      return _mutualData
-    }
-  },
+  computed: {},
   // 事件挂载
-  methods: {
-    /**
-     * [initConfig 根据传入的propsConfig，初始化config]
-     */
-    initProps() {
-      let _this = this;
-      mixinsObject(_this.config, _this.propsConfig);
-    },
-    remoteMethod(query) {
-      let _this = this;
-      clearTimeout(timeout);
-      timeout = setTimeout(function() {
-        _this.loading = true;
-        remoteSelect({
-          key: _this.config.apiConfig,
-          query: query
-        }).then((res) => {
-          _this.loading = false;
-          _this.options = res['data']
-        })
-      }, 1000);
-    }
-  },
-  watch: {
-    modelData: {
-      handler: function(val, oldVal) {
-        this.$emit('update:mutualData', val)
-      },
-      deep: true
-    },
-    captionData: {
-      handler: function(val, oldVal) {
-        this.$emit('update:mutualCaptionData', val)
-      },
-      deep: true
-    }
-  },
+  methods: {},
+  watch: {},
   // 在实例初始化之后，数据观测 (data observer) 和 event/watcher 事件配置之前被调用
   beforeCreate() {},
   // 在实例创建完成后被立即调用。在这一步，实例已完成以下的配置：数据观测 (data observer)，属性和方法的运算，watch/event 事件回调。然而，挂载阶段还没开始，$el 属性目前不可见。
   created() {},
   // 在挂载开始之前被调用：相关的 render 函数首次被调用。
-  beforeMount() {
-    this.initProps();
-  },
+  beforeMount() {},
   // el 被新创建的 vm.$el 替换，并挂载到实例上去之后调用该钩子。如果 root 实例挂载了一个文档内元素，当 mounted 被调用时 vm.$el 也在文档内。
   // 注意 mounted 不会承诺所有的子组件也都一起被挂载。如果你希望等到整个视图都渲染完毕，可以用 vm.$nextTick 替换掉 mounted：
   mounted() {
@@ -140,6 +92,6 @@ export default {
 
 </script>
 <style lang="scss" scoped>
-.ec-select {}
+.dashboard-select {}
 
 </style>

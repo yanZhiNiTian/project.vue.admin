@@ -15,9 +15,13 @@ import store from './store/index.js'; // vuex
 
 import './permission.js'; // 权限控制
 
+import ecCommonent from '@/component/component.js'
+
 import './mock/mockList.js';
 
 Vue.use(ElementUI);
+
+Vue.use(ecCommonent);
 
 Vue.config.productionTip = false
 

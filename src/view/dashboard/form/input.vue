@@ -1,103 +1,49 @@
 <template>
-  <div class="ec-select" id="ecSelect">
-    <label v-if="config.label" for="">
-      {{ config.label }}
-    </label>
-    <!-- 多选 -->
-    <el-select v-model="modelData" :placeholder="config.placeholder" :disabled="config.disabled" :multiple-limit="config.multipleLimit" size="small" multiple>
-      <el-option v-for="el in options" :key="el.value" :label="el.label" :value="el.value" :disabled="el.disabled">
-      </el-option>
-    </el-select>
+  <div class="dashboard-select" id="dashboardSelect">
+    <ec-normal-input :props-config="normalInputConfig" :props-data.sync="normalInputMutualData" :props-caption-data.sync="normalInputMutualCaptionData"></ec-normal-input>
   </div>
 </template>
 <script>
-import { deepClone } from 'outils';
-import { mixinsObject } from '@/util/utils.js';
-
 export default {
-  name: 'ecSelect',
+  name: 'dashboardInput',
   mixins: [],
   // 从父组件接受的属性
-  props: {
-    // 传递的配置文件
-    propsConfig: Object,
-    // 传递的数组列表
-    propsOptions: Array,
-    // 绑定的数据
-    mutualData: {
-      type: String,
-      default: ''
-    },
-    // 展示的数据
-    mutualCaptionData: {
-      type: String,
-      default: ''
-    }
-  },
+  props: {},
   // 组件
   components: {},
   data() {
     return {
-      config: {
-        label: '', // 搜索的label
+      // 普通输入
+      normalInputConfig: {
+        label: '普通输入', // 搜索的label
+        type: 'text',
+        maxlength: '',
+        minlength: '',
+        clearable: true,
+        name: '',
+        readonly: false,
+        max: '',
+        min: '',
+        step: '',
+        resize: 'none',
         placeholder: '请选择', // placeholder
-        multipleLimit: 0, // 限制多选个数
         disabled: false // select是否禁用
       },
-      options: this.propsOptions, // 搜索的options
-      modelData: this.mutualData.split(',')
+      normalInputMutualData: '2',
+      normalInputMutualCaptionData: '测试2'
     }
   },
   // 计算属性
-  computed: {
-    // 计算展示的data
-    captionData() {
-      let _this = this;
-      let _options = deepClone(_this.options); // options
-      let _modelData = _this.modelData; // 核心数据
-      let _mutualData = [];
-      _modelData.forEach(element => {
-        _options.forEach(el => {
-          if (el.value === element) {
-            _mutualData.push(el.label)
-          }
-        });
-      });
-      return _mutualData
-    }
-  },
+  computed: {},
   // 事件挂载
-  methods: {
-    /**
-     * [initConfig 根据传入的propsConfig，初始化config]
-     */
-    initProps() {
-      let _this = this;
-      mixinsObject(_this.config, _this.propsConfig);
-    }
-  },
-  watch: {
-    modelData: {
-      handler: function(val, oldVal) {
-        this.$emit('update:mutualData', val.join())
-      },
-      deep: true
-    },
-    captionData: {
-      handler: function(val, oldVal) {
-        this.$emit('update:mutualCaptionData', val.join())
-      },
-      deep: true
-    }
-  },
+  methods: {},
+  watch: {},
   // 在实例初始化之后，数据观测 (data observer) 和 event/watcher 事件配置之前被调用
   beforeCreate() {},
   // 在实例创建完成后被立即调用。在这一步，实例已完成以下的配置：数据观测 (data observer)，属性和方法的运算，watch/event 事件回调。然而，挂载阶段还没开始，$el 属性目前不可见。
   created() {},
   // 在挂载开始之前被调用：相关的 render 函数首次被调用。
-  beforeMount() {
-    this.initProps();
-  },
+  beforeMount() {},
   // el 被新创建的 vm.$el 替换，并挂载到实例上去之后调用该钩子。如果 root 实例挂载了一个文档内元素，当 mounted 被调用时 vm.$el 也在文档内。
   // 注意 mounted 不会承诺所有的子组件也都一起被挂载。如果你希望等到整个视图都渲染完毕，可以用 vm.$nextTick 替换掉 mounted：
   mounted() {
@@ -128,6 +74,6 @@ export default {
 
 </script>
 <style lang="scss" scoped>
-.ec-select {}
+.dashboard-select {}
 
 </style>

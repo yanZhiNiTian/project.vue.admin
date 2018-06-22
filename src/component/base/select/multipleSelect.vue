@@ -1,35 +1,95 @@
 <template>
-  <div class="dashboard" id="dashboard">
-    <select-test></select-test>
-    <input-test></input-test>
-    <cascader-test></cascader-test>
+  <div class="ec-select ec-multiple-select">
+    <label v-if="config.label" for="">
+      {{ config.label }}
+    </label>
+    <!-- 多选 -->
+    <el-select v-model="modelData" :placeholder="config.placeholder" :disabled="config.disabled" :multiple-limit="config.multipleLimit" size="small" multiple>
+      <el-option v-for="el in options" :key="el.value" :label="el.label" :value="el.value" :disabled="el.disabled">
+      </el-option>
+    </el-select>
   </div>
 </template>
 <script>
-import selectTest from './form/select.vue';
-import inputTest from './form/input.vue';
-import cascaderTest from './form/cascader.vue';
+import { deepClone } from 'outils';
+import { mixinsObject } from '@/util/utils.js';
+
 export default {
-  name: 'dashboard',
+  name: 'ecMultipleSelect',
   mixins: [],
   // 从父组件接受的属性
-  props: {},
-  // 组件
-  components: {
-    selectTest,
-    inputTest,
-    cascaderTest
+  props: {
+    // 传递的配置文件
+    propsConfig: Object,
+    // 传递的数组列表
+    propsOptions: Array,
+    // 绑定的数据
+    propsData: {
+      type: String,
+      default: ''
+    },
+    // 展示的数据
+    propsCaptionData: {
+      type: String,
+      default: ''
+    }
   },
+  // 组件
+  components: {},
   data() {
     return {
-      input: ''
+      config: {
+        label: '', // 搜索的label
+        placeholder: '请选择', // placeholder
+        multipleLimit: 0, // 限制多选个数
+        disabled: false // select是否禁用
+      },
+      options: this.propsOptions, // 搜索的options
+      modelData: this.propsData.split(',')
     }
   },
   // 计算属性
-  computed: {},
+  computed: {
+    // 计算展示的data
+    captionData() {
+      let _this = this;
+      let _options = deepClone(_this.options); // options
+      let _modelData = _this.modelData; // 核心数据
+      let _propsData = [];
+      _modelData.forEach(element => {
+        _options.forEach(el => {
+          if (el.value === element) {
+            _propsData.push(el.label)
+          }
+        });
+      });
+      return _propsData
+    }
+  },
   // 事件挂载
-  methods: {},
-  watch: {},
+  methods: {
+    /**
+     * [initConfig 根据传入的propsConfig，初始化config]
+     */
+    initProps() {
+      let _this = this;
+      mixinsObject(_this.config, _this.propsConfig);
+    }
+  },
+  watch: {
+    modelData: {
+      handler: function(val, oldVal) {
+        this.$emit('update:propsData', val.join())
+      },
+      deep: true
+    },
+    captionData: {
+      handler: function(val, oldVal) {
+        this.$emit('update:propsCaptionData', val.join())
+      },
+      deep: true
+    }
+  },
   // 在实例初始化之后，数据观测 (data observer) 和 event/watcher 事件配置之前被调用
   beforeCreate() {},
   // 在实例创建完成后被立即调用。在这一步，实例已完成以下的配置：数据观测 (data observer)，属性和方法的运算，watch/event 事件回调。然而，挂载阶段还没开始，$el 属性目前不可见。
@@ -39,7 +99,9 @@ export default {
   // el 被新创建的 vm.$el 替换，并挂载到实例上去之后调用该钩子。如果 root 实例挂载了一个文档内元素，当 mounted 被调用时 vm.$el 也在文档内。
   // 注意 mounted 不会承诺所有的子组件也都一起被挂载。如果你希望等到整个视图都渲染完毕，可以用 vm.$nextTick 替换掉 mounted：
   mounted() {
-    this.$nextTick(function() {})
+    this.$nextTick(function() {
+      this.initProps();
+    })
   },
   // 数据更新时调用，发生在虚拟 DOM 打补丁之前。这里适合在更新之前访问现有的 DOM，比如手动移除已添加的事件监听器。
   // 该钩子在服务器端渲染期间不被调用，因为只有初次渲染会在服务端进行。
@@ -65,7 +127,7 @@ export default {
 }
 
 </script>
-<style scoped>
-.dashboard {}
+<style lang="scss" scoped>
+@import './ecSelect.scss';
 
 </style>

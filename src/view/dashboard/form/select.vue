@@ -1,28 +1,50 @@
 <template>
-  <div class="dashboard" id="dashboard">
-    <select-test></select-test>
-    <input-test></input-test>
-    <cascader-test></cascader-test>
+  <div class="dashboard-select" id="dashboardSelect">
+    <ec-normal-select :props-config="selectConfig" :props-options="selectOptions" :props-data.sync="selectValue" :props-caption-data.sync="selectLabel"></ec-normal-select>
+    <ec-multiple-select :props-config="multipleSelectConfig" :props-options="multipleSelectOptions" :props-data.sync="multipleSelectValue" :props-caption-data.sync="multipleSelectLabel"></ec-multiple-select>
+    <ec-remote-select :props-config="ecRemoteSelectConfig" :props-data.sync="remoteSelectValue" :props-caption-data.sync="remoteSelectLabel"></ec-remote-select>
   </div>
 </template>
 <script>
-import selectTest from './form/select.vue';
-import inputTest from './form/input.vue';
-import cascaderTest from './form/cascader.vue';
 export default {
-  name: 'dashboard',
+  name: 'dashboardSelect',
   mixins: [],
   // 从父组件接受的属性
   props: {},
   // 组件
-  components: {
-    selectTest,
-    inputTest,
-    cascaderTest
-  },
+  components: {},
   data() {
     return {
-      input: ''
+      // 普通下拉
+      selectConfig: {
+        label: '普通测试', // 搜索的label
+        multiple: true, // 是否开启多选
+        filterable: false, // 是否开启搜索功能
+        placeholder: '请选择', // placeholder
+        disabled: false, // select是否禁用
+        clearable: true // select是否可以被清空
+      },
+      selectOptions: [],
+      selectValue: '2',
+      selectLabel: '测试2',
+      // 多选下拉
+      multipleSelectConfig: {
+        label: '多选测试', // 搜索的label
+        placeholder: '请选择', // placeholder
+        disabled: false // select是否禁用
+      },
+      multipleSelectOptions: [],
+      multipleSelectValue: '2',
+      multipleSelectLabel: '多选测试2',
+      // 远程搜索
+      ecRemoteSelectConfig: {
+        label: '远程测试', // 搜索的label
+        apiConfig: 'ecRemoteSelectApiConfig', // 远程url的key
+        disabled: false, // select是否禁用
+        placeholder: '请输入' // placeholder
+      },
+      remoteSelectValue: '',
+      remoteSelectLabel: ''
     }
   },
   // 计算属性
@@ -33,7 +55,22 @@ export default {
   // 在实例初始化之后，数据观测 (data observer) 和 event/watcher 事件配置之前被调用
   beforeCreate() {},
   // 在实例创建完成后被立即调用。在这一步，实例已完成以下的配置：数据观测 (data observer)，属性和方法的运算，watch/event 事件回调。然而，挂载阶段还没开始，$el 属性目前不可见。
-  created() {},
+  created() {
+    this.selectOptions = [0, 1, 2, 3].map(item => {
+      return {
+        label: `普通测试${item + 1}`,
+        value: `${item + 1}`,
+        disabled: Boolean((item + 1) % 2)
+      }
+    });
+    this.multipleSelectOptions = [0, 1, 2, 3].map(item => {
+      return {
+        label: `多选测试${item + 1}`,
+        value: `${item + 1}`,
+        disabled: Boolean((item + 1) % 2)
+      }
+    })
+  },
   // 在挂载开始之前被调用：相关的 render 函数首次被调用。
   beforeMount() {},
   // el 被新创建的 vm.$el 替换，并挂载到实例上去之后调用该钩子。如果 root 实例挂载了一个文档内元素，当 mounted 被调用时 vm.$el 也在文档内。
@@ -65,7 +102,7 @@ export default {
 }
 
 </script>
-<style scoped>
-.dashboard {}
+<style lang="scss" scoped>
+.dashboard-select {}
 
 </style>
