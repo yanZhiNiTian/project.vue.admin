@@ -4,7 +4,7 @@
       {{ config.label }}
     </label>
     <!-- 远程select -->
-    <el-select v-model="modelData" :placeholder="config.placeholder" :disabled="config.disabled" :remote-method="remoteMethod" :loading="loading" size="small" filterable remote>
+    <el-select v-model="modelData" :placeholder="config.placeholder" :disabled="config.disabled" :remote-method="remoteMethod" :loading="loading" @change="changeModelCaptionData" size="small" filterable clearable remote>
       <el-option v-for="el in options" :key="el.value" :label="el.label" :value="el.value">
       </el-option>
     </el-select>
@@ -45,25 +45,12 @@ export default {
       },
       loading: false, // 是否正在从远程获取数据
       options: [], // 搜索的options
-      modelData: this.propsData // 核心数据
+      modelData: this.propsData, // 核心数据
+      modelCaptionData: this.propsCaptionData // 展示数据
     }
   },
   // 计算属性
-  computed: {
-    // 计算展示的data
-    captionData() {
-      let _this = this;
-      let _options = deepClone(_this.options); // options
-      let _modelData = _this.modelData; // 核心数据
-      let _propsData = '';
-      _options.forEach(el => {
-        if (el.value === _modelData) {
-          _propsData = el.label
-        }
-      });
-      return _propsData
-    }
-  },
+  computed: {},
   // 事件挂载
   methods: {
     /**
@@ -73,6 +60,7 @@ export default {
       let _this = this;
       mixinsObject(_this.config, _this.propsConfig);
     },
+    // 远程检索的函数
     remoteMethod(query) {
       let _this = this;
       clearTimeout(timeout);
@@ -86,6 +74,19 @@ export default {
           _this.options = res['data']
         })
       }, 1000);
+    },
+    // 修改触发战术数据更新
+    changeModelCaptionData(modelData) {
+      let _this = this;
+      let _options = deepClone(_this.options); // options
+      let _modelData = deepClone(modelData); // 核心数据
+      let _modelCaptionData = '';
+      _options.forEach(el => {
+        if (el.value === _modelData) {
+          _modelCaptionData = el.label
+        }
+      });
+      _this.modelCaptionData = _modelCaptionData
     }
   },
   watch: {
@@ -95,7 +96,7 @@ export default {
       },
       deep: true
     },
-    captionData: {
+    modelCaptionData: {
       handler: function(val, oldVal) {
         this.$emit('update:propsCaptionData', val)
       },

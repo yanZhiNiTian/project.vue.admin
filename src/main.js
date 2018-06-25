@@ -15,13 +15,16 @@ import store from './store/index.js'; // vuex
 
 import './permission.js'; // 权限控制
 
-import ecCommonent from '@/component/component.js'
+import ecCommonent from '@/component/component.js'; // 组件
+import ecFiltre from '@/filtre/filter.js'; // 过滤器
 
 import './mock/mockList.js';
 
 Vue.use(ElementUI);
 
 Vue.use(ecCommonent);
+
+Vue.use(ecFiltre);
 
 Vue.config.productionTip = false
 

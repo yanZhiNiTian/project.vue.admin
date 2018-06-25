@@ -4,7 +4,7 @@
       {{ config.label }}
     </label>
     <!-- 多选 -->
-    <el-select v-model="modelData" :placeholder="config.placeholder" :disabled="config.disabled" :multiple-limit="config.multipleLimit" size="small" multiple>
+    <el-select v-model="modelData" :placeholder="config.placeholder" :disabled="config.disabled" :multiple-limit="config.multipleLimit" @change="changeModelCaptionData" size="small" multiple>
       <el-option v-for="el in options" :key="el.value" :label="el.label" :value="el.value" :disabled="el.disabled">
       </el-option>
     </el-select>
@@ -45,27 +45,12 @@ export default {
         disabled: false // select是否禁用
       },
       options: this.propsOptions, // 搜索的options
-      modelData: this.propsData.split(',')
+      modelData: this.propsData.split(',') || [], // 绑定的核心数据
+      modelCaptionData: this.propsCaptionData.split(',') || [] // 展示的核心数据
     }
   },
   // 计算属性
-  computed: {
-    // 计算展示的data
-    captionData() {
-      let _this = this;
-      let _options = deepClone(_this.options); // options
-      let _modelData = _this.modelData; // 核心数据
-      let _propsData = [];
-      _modelData.forEach(element => {
-        _options.forEach(el => {
-          if (el.value === element) {
-            _propsData.push(el.label)
-          }
-        });
-      });
-      return _propsData
-    }
-  },
+  computed: {},
   // 事件挂载
   methods: {
     /**
@@ -74,6 +59,21 @@ export default {
     initProps() {
       let _this = this;
       mixinsObject(_this.config, _this.propsConfig);
+    },
+    // 修改触发战术数据更新
+    changeModelCaptionData(modelData) {
+      let _this = this;
+      let _options = deepClone(_this.options); // options
+      let _modelData = deepClone(modelData); // 核心数据
+      let _modelCaptionData = [];
+      _modelData.forEach(element => {
+        _options.forEach(el => {
+          if (el.value === element) {
+            _modelCaptionData.push(el.label)
+          }
+        });
+      });
+      _this.modelCaptionData = _modelCaptionData
     }
   },
   watch: {
@@ -83,7 +83,7 @@ export default {
       },
       deep: true
     },
-    captionData: {
+    modelCaptionData: {
       handler: function(val, oldVal) {
         this.$emit('update:propsCaptionData', val.join())
       },

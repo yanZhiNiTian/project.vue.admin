@@ -4,7 +4,7 @@
       {{ config.label }}
     </label>
     <!-- 非多选 -->
-    <el-select v-model="modelData" :placeholder="config.placeholder" :disabled="config.disabled" :clearable="config.clearable" :filterable="config.filterable" size="small">
+    <el-select v-model="modelData" :placeholder="config.placeholder" :disabled="config.disabled" :clearable="config.clearable" :filterable="config.filterable" size="small" @change="changeModelCaptionData">
       <el-option v-for="el in options" :key="el.value" :label="el.label" :value="el.value" :disabled="el.disabled">
       </el-option>
     </el-select>
@@ -45,25 +45,12 @@ export default {
         clearable: true // select是否可以被清空
       },
       options: this.propsOptions, // 搜索的options
-      modelData: this.propsData
+      modelData: this.propsData, // 绑定的核心数据
+      modelCaptionData: this.propsCaptionData // 展示的核心数据
     }
   },
   // 计算属性
-  computed: {
-    // 计算展示的data
-    captionData() {
-      let _this = this;
-      let _options = deepClone(_this.options); // options
-      let _modelData = _this.modelData; // 核心数据
-      let _propsData = '';
-      _options.forEach(el => {
-        if (el.value === _modelData) {
-          _propsData = el.label
-        }
-      });
-      return _propsData
-    }
-  },
+  computed: {},
   // 事件挂载
   methods: {
     /**
@@ -78,7 +65,7 @@ export default {
      * @param  {[type]} query [description]
      * @return {[type]}       [description]
      */
-    filterMethod: function(query) {
+    filterMethod(query) {
       let _this = this;
       // 先拷贝一份新的数据到config下
       let _backUpOptions = deepClone(_this.options);
@@ -93,6 +80,20 @@ export default {
       } else {
         _this.options = _this.backUpOptions
       }
+    },
+    // 修改触发战术数据更新
+    changeModelCaptionData(modelData) {
+      console.log(modelData)
+      let _this = this;
+      let _options = deepClone(_this.options); // options
+      let _modelData = deepClone(modelData); // 核心数据
+      let _modelCaptionData = '';
+      _options.forEach(el => {
+        if (el.value === _modelData) {
+          _modelCaptionData = el.label
+        }
+      });
+      _this.modelCaptionData = _modelCaptionData
     }
   },
   watch: {
@@ -102,7 +103,7 @@ export default {
       },
       deep: true
     },
-    captionData: {
+    modelCaptionData: {
       handler: function(val, oldVal) {
         this.$emit('update:propsCaptionData', val)
       },

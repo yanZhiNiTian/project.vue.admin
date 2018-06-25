@@ -4,14 +4,31 @@
     <label v-if="config.label" for="">
       {{ config.label }}
     </label>
-    <!-- 远程select -->
-    <el-cascader v-model="modelData" :options="options" :placeholder="config.placeholder" :disabled="config.disabled" :show-all-levels="config.showAllLevels" :filterable="config.filterable" :debounce="config.debounce" :change-on-select="config.changeOnSelect" size="small">
+    <el-cascader ref="elNormalCascader" v-model="modelData" :options="options" :placeholder="config.placeholder" :disabled="config.disabled" :show-all-levels="config.showAllLevels" :filterable="config.filterable" :debounce="config.debounce" :change-on-select="config.changeOnSelect" @change="changeModelCaptionData" size="small">
     </el-cascader>
   </div>
 </template>
 <script>
 import { deepClone } from 'outils';
 import { mixinsObject } from '@/util/utils.js';
+/**
+ * [getModelCaptionData 遍历级联选择器，获取对象相应的value值]
+ * @param  {Array} modelData [value 值]
+ * @param  {Array} options   [级联对象]
+ * @return {Array}           [label 值]
+ */
+function getModelCaptionData(modelData, options) {
+  let _modelCaptionData = [];
+  let _modelData = modelData;
+  let _options = options;
+  while (_modelData.length > 0) {
+    let _modelCaptionDataOption = _options.find((element) => (element['value'] === _modelData[0]));
+    _modelCaptionData.push(_modelCaptionDataOption['label']);
+    _options = _modelCaptionDataOption['children'];
+    _modelData.splice(0, 1);
+  }
+  return _modelCaptionData
+}
 export default {
   name: 'ecNormalCascader',
   mixins: [],
@@ -39,22 +56,19 @@ export default {
       config: {
         label: '',
         placeholder: '请选择',
-        disabled: false,
-        showAllLevels: true,
-        filterable: true,
-        debounce: 300,
-        changeOnSelect: false
+        disabled: false, // disable
+        showAllLevels: true, // 是否展示所有层级
+        filterable: true, // 是否可搜索选项
+        debounce: 300, // 延迟抖动
+        changeOnSelect: false // 是否一旦变动就修改
       },
-      options: this.propsOptions,
-      modelData: this.propsData.split(',') || []
+      options: this.propsOptions, // 传递的options
+      modelData: this.propsData.split(',') || [], // 绑定的核心数据
+      modelCaptionData: this.propsCaptionData.split(',') || [] // 展示的核心数据
     }
   },
   // 计算属性
-  computed: {
-    modelCaptionData() {
-
-    }
-  },
+  computed: {},
   // 事件挂载
   methods: {
     /**
@@ -63,12 +77,22 @@ export default {
     initProps() {
       let _this = this;
       mixinsObject(_this.config, _this.propsConfig);
+    },
+    /**
+     * [changeModelCaptionData 级联选择器变动的回调函数]
+     * [当绑定数据改变时，通过遍历去获取对应的 label 值]
+     */
+    changeModelCaptionData(modelData) {
+      let _this = this;
+      let _modelData = deepClone(modelData);
+      let _options = deepClone(_this.options);
+      _this.modelCaptionData = getModelCaptionData(_modelData, _options)
     }
   },
   watch: {
     modelData: {
       handler: function(val, oldVal) {
-        this.$emit('update:p ropsData', val.join())
+        this.$emit('update:propsData', val.join())
       },
       deep: true
     },
@@ -117,6 +141,6 @@ export default {
 
 </script>
 <style lang="scss" scoped>
-.ec-cascader {}
+@import './cascader.scss'
 
 </style>

@@ -1,8 +1,6 @@
 <template>
   <div class="dashboard-cascader" id="dashboardCascader">
     <ec-normal-cascader :props-config="normalCascaderConfig" :props-options="normalCascaderOptions" :props-data.sync="normalCascaderPropsData" :props-caption-data.sync="normalCascaderPropsCaptionData"></ec-normal-cascader>
-    {{ normalCascaderPropsData }}
-    {{ normalCascaderPropsCaptionData }}
   </div>
 </template>
 <script>
@@ -47,8 +45,8 @@ export default {
         label: '普通级联'
       },
       normalCascaderOptions: createCascaderOption(),
-      normalCascaderPropsData: '1,1-1,1-1-1',
-      normalCascaderPropsCaptionData: 'item 1,item 1-1,item 1-1-1'
+      normalCascaderPropsData: '',
+      normalCascaderPropsCaptionData: ''
     }
   },
   // 计算属性

@@ -2,19 +2,22 @@
  * @Author: wdy
  * @Date:   2018-06-13 10:58:29
  * @Last Modified by:   wdy
- * @Last Modified time: 2018-06-21 18:23:45
+ * @Last Modified time: 2018-06-25 14:51:00
  */
 import { baseUrl } from '../assets/js/config.js';
 const privateApiKeyList = [{
   key: 'login', // 登陆
   value: 'login'
 }, {
-  key: 'userPower', // 登陆
+  key: 'userPower', // 用户权限
   value: 'userPower'
+}, {
+  key: 'normalPaperList', // 用户权限
+  value: 'normalPaperList'
 }];
 
 const commonApiKeyList = [{
-  key: 'remoteSelect', // 登陆
+  key: 'remoteSelect', // 远程加载数据用
   value: 'remoteSelect'
 }]
 

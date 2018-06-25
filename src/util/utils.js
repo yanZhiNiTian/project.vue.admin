@@ -2,7 +2,7 @@
  * @Author: wdy
  * @Date:   2018-06-21 13:33:23
  * @Last Modified by:   wdy
- * @Last Modified time: 2018-06-21 15:21:31
+ * @Last Modified time: 2018-06-25 14:42:15
  */
 import { deepClone } from 'outils';
 /**
@@ -12,10 +12,9 @@ import { deepClone } from 'outils';
  * @return {[type]}               [description]
  */
 export function mixinsObject(defaultObject = {}, propsObject = {}) {
-  for (let key in defaultObject) {
-    if (propsObject.hasOwnProperty(key)) {
-      defaultObject[key] = propsObject[key]
-    }
+  let _propsObject = deepClone(propsObject);
+  for (let key in _propsObject) {
+    defaultObject[key] = _propsObject[key]
   }
 }
 

@@ -2,7 +2,7 @@
  * @Author: wdy
  * @Date:   2018-06-19 15:52:15
  * @Last Modified by:   wdy
- * @Last Modified time: 2018-06-20 16:50:50
+ * @Last Modified time: 2018-06-25 11:02:06
  */
 import Home from '@/view/home/home.vue';
 
@@ -12,7 +12,7 @@ const asynRouterMap = [{
   children: [{
     path: 'normalPaperList',
     component: () =>
-      import ('@/view/other/other.vue')
+      import ('@/view/paper/normalPaperList.vue')
   }, {
     path: 'randomPaperList',
     component: () =>
